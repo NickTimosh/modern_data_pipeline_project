@@ -9,8 +9,8 @@ from pathlib import Path
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
+CHANNEL_HANDLE = os.getenv("CHANNEL_HANDLE")
 API_KEY = os.getenv("API_KEY")
-CHANNEL_HANDLE = "ion_lab"
 max_results = 50
 
 
