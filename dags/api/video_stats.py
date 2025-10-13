@@ -2,18 +2,22 @@ import requests
 import json 
 from datetime import date
 
-import os
-from dotenv import load_dotenv
+# import os
+# from dotenv import load_dotenv
 from pathlib import Path
 
-env_path = Path(__file__).parent / ".env"
-load_dotenv(dotenv_path=env_path)
+from airflow.decorators import task
+from airflow.models import Variable
 
-CHANNEL_HANDLE = os.getenv("CHANNEL_HANDLE")
-API_KEY = os.getenv("API_KEY")
+project_root = Path(__file__).parents[2]
+# env_path = project_root / ".env"
+# load_dotenv(dotenv_path=env_path)
+
+CHANNEL_HANDLE = Variable.get("CHANNEL_HANDLE")
+API_KEY = Variable.get("API_KEY")
 max_results = 50
 
-
+@task
 def get_playlist_id():
 
     try:
@@ -33,6 +37,7 @@ def get_playlist_id():
     except requests.exceptions.RequestException as e:
         raise e
     
+@task    
 def get_video_ids(playlist_id):
 
     video_ids = []
@@ -66,6 +71,7 @@ def get_video_ids(playlist_id):
     except requests.exceptions.RequestException as e:
         raise e
 
+@task
 def extract_video_data(video_ids):
     extracted_data = []
 
@@ -105,7 +111,6 @@ def extract_video_data(video_ids):
                 }
 
                 extracted_data.append(video_data)
-                print(extracted_data)
         
         return extracted_data
     
@@ -113,14 +118,14 @@ def extract_video_data(video_ids):
     except requests.exceptions.RequestException as e:
         raise e
 
+@task
 def load_to_json(extracted_data):
-    file_path = f"./data/YT_data_{date.today()}.json"
+    file_path = project_root / f"data/YT_data_{date.today()}.json"
     
-
     with open(file_path, "w", encoding="utf-8") as json_outfile:
         json.dump(extracted_data, json_outfile, indent=4,ensure_ascii=False)
 
-
+    print(f"Loaded to:\n{file_path}")
 
 if __name__ == "__main__":
     print("Defining playlist_id...")
@@ -138,7 +143,5 @@ if __name__ == "__main__":
 
     print("Loading data...")
     load_to_json(video_data)
-
-    print("Done!")
 
         
