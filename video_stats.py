@@ -114,7 +114,7 @@ def extract_video_data(video_ids):
         raise e
 
 def load_to_json(extracted_data):
-    file_path = f"./_data/YT_data_{date.today()}.json"
+    file_path = f"./data/YT_data_{date.today()}.json"
     
 
     with open(file_path, "w", encoding="utf-8") as json_outfile:
