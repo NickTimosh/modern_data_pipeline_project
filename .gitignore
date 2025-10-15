@@ -3,3 +3,4 @@ __pycache__/
 .env
 logs/
 data/
+data/YT_data_2025-10-15.json
