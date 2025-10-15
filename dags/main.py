@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from api.video_stats import get_playlist_id, get_video_ids,extract_video_data,load_to_json
 
 from datawarehouse.dw import staging_table, core_table
+from dataquality.soda import yt_elt_data_quality
 
 
 local_tz = pendulum.timezone("UTC")
@@ -53,3 +54,18 @@ with DAG(
 
     # Define dependencies 
     update_staging >> update_core
+
+with DAG(
+    dag_id="data_quality",
+    default_args=default_args,
+    description = "DAG to trigger soda checks",
+    schedule="0 16 * * *",
+    catchup=False
+) as dag:
+    
+    # Define tasks
+    soda_validate_staging = yt_elt_data_quality("staging")
+    soda_validate_core= yt_elt_data_quality("core")
+
+    # Define dependencies 
+    soda_validate_staging >> soda_validate_core
