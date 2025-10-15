@@ -1,24 +1,26 @@
-import logging 
+import logging
 
 logger = logging.getLogger(__name__)
 table = "yt_api"
 
+
 def insert_rows(cur, conn, schema, row):
 
     try:
+
         if schema == "staging":
 
             video_id = "video_id"
-            
+
             cur.execute(
                 f"""
                 INSERT INTO {schema}.{table}("Video_ID", "Video_Title", "Upload_Date", "Duration", "Video_Views", "Likes_Count", "Comments_Count")
-                VALUES (%(video_id)s, %(title)s, %(publishedAt)s, %(duration)s, %(viewCount)s, %(likeCount)s, %(commentCount)s);
+                VALUES (%(video_id)s, %(title)s, %(published_at)s, %(duration)s, %(view_count)s, %(like_count)s, %(comment_count)s);
                 """,
-                row
+                row,
             )
 
-        else: 
+        else:
 
             video_id = "Video_ID"
 
@@ -35,8 +37,9 @@ def insert_rows(cur, conn, schema, row):
         logger.info(f"Inserted row with Video_ID: {row[video_id]}")
 
     except Exception as e:
-        logger.error(f"Error inerting row with Video_ID: {row[video_id]}")
+        logger.error(f"Error inserting row with Video_ID: {row[video_id]}")
         raise e
+
 
 def update_rows(cur, conn, schema, row):
 
@@ -44,11 +47,11 @@ def update_rows(cur, conn, schema, row):
         # staging
         if schema == "staging":
             video_id = "video_id"
-            upload_date = "publishedAt"
+            upload_date = "published_at"
             video_title = "title"
-            video_views = "viewCount"
-            likes_count = "likeCount"
-            comments_count = "commentCount"
+            video_views = "view_count"
+            likes_count = "like_count"
+            comments_count = "comment_count"
         # core
         else:
             video_id = "Video_ID"
@@ -67,7 +70,7 @@ def update_rows(cur, conn, schema, row):
                 "Comments_Count" = %({comments_count})s
             WHERE "Video_ID" = %({video_id})s AND "Upload_Date" = %({upload_date})s;
             """,
-            row
+            row,
         )
 
         conn.commit()
@@ -77,7 +80,8 @@ def update_rows(cur, conn, schema, row):
     except Exception as e:
         logger.error(f"Error updating row with Video_ID: {row[video_id]} - {e}")
         raise e
-    
+
+
 def delete_rows(cur, conn, schema, ids_to_delete):
 
     try:

@@ -15,44 +15,53 @@ from airflow.decorators import task
 logger = logging.getLogger(__name__)
 table = "yt_api"
 
-@task 
+
+@task
 def staging_table():
 
     schema = "staging"
 
-    conn,cur = None, None 
+    conn, cur = None, None
 
     try:
-        conn,cur = get_conn_cursor()
 
-        yt_data = load_data
+        conn, cur = get_conn_cursor()
+
+        YT_data = load_data()
+
         create_schema(schema)
         create_table(schema)
 
         table_ids = get_video_ids(cur, schema)
 
-        for row in yt_data:
+        for row in YT_data:
+
             if len(table_ids) == 0:
-                update_rows(cur, conn, schema, row)
-            else:
                 insert_rows(cur, conn, schema, row)
-        
-        ids_in_json = (row["video_id"] for row in yt_data)
+
+            else:
+                if row["video_id"] in table_ids:
+                    update_rows(cur, conn, schema, row)
+                else:
+                    insert_rows(cur, conn, schema, row)
+
+        ids_in_json = {row["video_id"] for row in YT_data}
 
         ids_to_delete = set(table_ids) - ids_in_json
 
         if ids_to_delete:
             delete_rows(cur, conn, schema, ids_to_delete)
-        
+
         logger.info(f"{schema} table update completed")
 
     except Exception as e:
-        logger.error(f"An error occured during the update of {schema} table: e")    
+        logger.error(f"An error occurred during the update of {schema} table: {e}")
         raise e
-    
+
     finally:
-        if conn and cur: 
+        if conn and cur:
             close_conn_cursor(conn, cur)
+
 
 @task
 def core_table():
@@ -104,4 +113,4 @@ def core_table():
 
     finally:
         if conn and cur:
-            close_conn_cursor(conn, cur)       
+            close_conn_cursor(conn, cur)
