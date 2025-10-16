@@ -68,30 +68,44 @@ jobs:
         DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE }}
         DOCKERHUB_REPOSITORY: ${{ vars.DOCKERHUB_REPOSITORY }}
         DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+
       steps:
         - name: Checkout code
           uses: actions/checkout@v4
+
         - name: Get changed files
           id: changed-files-tests
           uses: tj-actions/changed-files@v45
           with:
             files: |
-                dags/**
-                include/**
-                docker-compose.yaml
+              dags/**
+              include/**
+              docker-compose.yaml
+
         - name: Set up Docker Compose
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: docker compose up -d
+
         - name: Run Unit and Integration Tests
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: docker exec -t airflow-worker sh -c "pytest tests/ -v"
+
+        - name: Wait for Airflow to initialize DAGs
+          if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+          run: |
+            echo "Waiting for Airflow to initialize DAGs..."
+            sleep 30
+            docker exec -t airflow-worker sh -c "airflow dags list"
+
         - name: Run End-to-End DAG Tests
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: |
             DAG_NAMES=("produce_json" "update_db" "data_quality")
             for DAG in "${DAG_NAMES[@]}"; do 
+              echo "Running test for DAG: $DAG"
               docker exec -t airflow-worker sh -c "airflow dags test $DAG"
             done
+
         - name: Tear down Docker Compose
           if: steps.changed-files-tests.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
           run: docker compose down
