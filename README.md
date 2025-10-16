@@ -43,3 +43,8 @@
 * [Crontab](https://crontab.guru/)
 * [Airflow start_date](https://airflow.apache.org/docs/apache-airflow/stable/faq.html#what-s-the-deal-with-start-date)
 
+## Tests
+
+* [Soda Postgres Configuration](https://docs.soda.io/data-source-reference/connect-postgres)
+* [SodaCL Checks](https://docs.soda.io/soda-cl-overview)
+* [Conftest script](https://docs.pytest.org/en/stable/reference/fixtures.html)
