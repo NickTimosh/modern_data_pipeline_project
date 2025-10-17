@@ -3,6 +3,7 @@
 ## Overview
 
 I’ve started building a personal data platform that collects and processes data from my YouTube channel, LinkedIn, GitHub, and other platforms to better understand engagement, growth, and audience behavior across channels. It’s also a great opportunity to apply modern data engineering tools and practices such as Apache Airflow, Docker, API integrations, functional and data quality testing, and CI/CD automation.
+<img width="1280" height="640" alt="Untitled design" src="https://github.com/user-attachments/assets/7ebdf5de-c790-4797-8d7d-21a99e838adc" />
 
 ## Summary
 This ELT (or I`d rather say EtLT) pipeline is orchestrated with Airflow, containerized with Docker, and stores data in PostgreSQL. The process includes:
@@ -11,7 +12,7 @@ This ELT (or I`d rather say EtLT) pipeline is orchestrated with Airflow, contain
 * Transform & Load to reporting tables
 * Ensure data quality applying unit tests and data quality checks.
 * Run tests and build Docker images using GitHub Actions CI/CD workflows.
-<img width="773" height="664" alt="image" src="https://github.com/user-attachments/assets/8884df62-bb68-466d-bf4d-8e2ff72ebf7d" />
+
 
 ## DAGs
 Three Airflow DAGs are defined and triggered sequentially:
