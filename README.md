@@ -48,3 +48,10 @@
 * [Soda Postgres Configuration](https://docs.soda.io/data-source-reference/connect-postgres)
 * [SodaCL Checks](https://docs.soda.io/soda-cl-overview)
 * [Conftest script](https://docs.pytest.org/en/stable/reference/fixtures.html)
+
+## Github Actions
+
+* [Github Actions QuickStart](https://docs.github.com/en/actions/get-started/quickstart)
+* [Checkout Action](https://github.com/actions/checkout)
+* [Changed File Action](https://github.com/tj-actions/changed-files)
+* [Setup Buildx Action](https://github.com/docker/setup-buildx-action)
