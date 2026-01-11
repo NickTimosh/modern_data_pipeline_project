@@ -10,7 +10,7 @@ I’ve started building a personal data platform that collects and processes dat
 This ELT (or I`d rather say EtLT) pipeline is orchestrated with Airflow, containerized with Docker, and stores data in PostgreSQL. The process includes:
 * Retrieve video metadata via the YouTube API.
 * Store the raw data in a staging schema inside a dockerized PostgreSQL instance.
-* Transform & Load to reporting tables
+* Transform & Load to reporting tables.
 * Ensure data quality applying unit tests and data quality checks.
 * Run tests and build Docker images using GitHub Actions CI/CD workflows.
 
